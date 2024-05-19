@@ -13,17 +13,19 @@ def main():
     
     # other options
     # perplexity
-    parser.add_argument("-p","--perplexity", help="perplexity value used in tSNE, recommended range: _", type=int) #float?
-    # number of iterations
-    parser.add_argument("-n","--num-iterations", help="number of iterations used in tSNE, default: _", type=int)
+    parser.add_argument("-p", "--perplexity", 
+                        help="Perplexity value used in tSNE. It is recommended to use a larger perplexity for larger datasets. Default=30, recommended range: 5-50", 
+                        type=float) #int?
     # learning rate
-    parser.add_argument("-r","--learning-rate", help="learning rate used in tSNE, default: _", type=float) #int?
+    parser.add_argument("-r", "--learning-rate", 
+                        help="Learning rate used in tSNE, default=200. Recommend range: 100-1000",
+                        type=float) #int?
+    
     # parse args
     args = parser.parse_args()
 
 #dataset = args.data
 #perplexity = args.perplexity
-#iterations = args.num_iterations
 #learning_rate = args.learning_rate
     
    if __name__ == "__main__":

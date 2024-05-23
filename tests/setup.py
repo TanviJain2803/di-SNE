@@ -1,13 +1,11 @@
+from setuptools import setup
+# from setuptools import find_packages
+
 setup(
     name='diSNE',
-    version=VERSION,
+    version='1.0',
     description='CSE 185 Project',
-    author='',
-    author_email='',
-    packages=find_packages(),
-    entry_points={
-        "console_scripts": [
-            "diSNE=di-SNE.diSNE:main"
-        ],
-    },
+    author='Tanvi Jain, Nimrit Kaur, Kathryn Chen',
+    author_email='kac012@ucsd.edu',
+    packages=['diSNE'],
 )

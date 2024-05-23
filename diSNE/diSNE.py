@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import argparse
 # import functions from utils file
 from diSNE_utils import *
@@ -7,10 +9,8 @@ import os
 sys.path.append(os.environ["HOME"]+"/.local/lib/python3.9/site-packages")
 import scanpy as sc, anndata as ad
 import numpy as np
-import harmonypy #? idk if we need this or the leiden one bc we assume clustering etc has already been done 
 import leidenalg
 import pandas as pd
-from sklearn.datasets import make_blobs #?
 from scipy.sparse import issparse
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -92,7 +92,7 @@ def main():
     )
     
     # input 
-    parser.add_argument("dataset", help="Annotated data (AnnData) matrix, with Leiden clustering already performed", type=str)
+    parser.add_argument("data", help="Annotated data (AnnData) matrix, with Leiden clustering already performed", type=str)
     
     # output 
     # option to display output?
@@ -107,7 +107,7 @@ def main():
                         help="Learning rate used during optimization, default=200. Recommend range: 100-1000",
                         type=float)
     # number of iterations 
-    parser.add_argument("-T", "--num-interations", 
+    parser.add_argument("-T", "--num-iterations", 
                         help="Number of iterations used for optimization. Default=1000",
                         type=float) 
     # early exaggeration
@@ -125,8 +125,13 @@ def main():
     early_exag = args.early_exaggeration
 
     # check what options the user specified
+#     print("dataset:", dataset)
+#     print("perp:", perplexity)
+#     print("learning rate:", learning_rate)
+#     print("iterations:", iterations)
+#     print("dataset:", early_exag)
     # run diSNE with user inputs
-    diSNE(dataset) 
+#     diSNE(dataset) 
     
 if __name__ == "__main__":
     main()

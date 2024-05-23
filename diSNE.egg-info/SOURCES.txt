@@ -6,4 +6,5 @@ diSNE/trial.py
 diSNE.egg-info/PKG-INFO
 diSNE.egg-info/SOURCES.txt
 diSNE.egg-info/dependency_links.txt
+diSNE.egg-info/entry_points.txt
 diSNE.egg-info/top_level.txt

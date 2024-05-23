@@ -1,0 +1,3 @@
+[console_scripts]
+diSNE = diSNE.diSNE:main
+

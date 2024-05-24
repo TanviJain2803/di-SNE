@@ -13,6 +13,7 @@ from scipy.sparse import issparse
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import hdf5plugin
 from scipy.spatial.distance import pdist, squareform
 # import functions from utils file
 from .diSNE_utils import *
@@ -132,12 +133,12 @@ def main():
     args = parser.parse_args()
 
     dataset = args.data
-    perplexity = args.p
-    learning_rate = args.r
-    iterations = args.T
-    early_exag = args.E
-    graph = args.g
-    PCA = args.P
+    perplexity = args.perplexity
+    learning_rate = args.learning_rate
+    iterations = args.num_iterations
+    early_exag = args.early_exaggeration
+    graph = args.graph
+    PCA = args.PCA
 
     # check arg parser functionality
     print("dataset:", dataset)
@@ -149,13 +150,15 @@ def main():
     print("PCA:", PCA)
 
     # run diSNE with user inputs
-    results = diSNE(dataset, perplexity, iterations, learning_rate, early_exag, PCA) 
+#     results = diSNE(dataset, perplexity, iterations, learning_rate, early_exag, PCA) 
     
     # save results to new file
     # ADD CODE HERE
     
     # generate and plot to specified directory if user ran with -g option
-    plot_results(dataset, graph, feature='leiden', title='diSNE results', figsize=(10, 8))
+#     plot_results(dataset, graph, feature='leiden', title='diSNE results', figsize=(10, 8))
+
+    # add code here
     
     
 if __name__ == "__main__":

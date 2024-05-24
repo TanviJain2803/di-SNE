@@ -18,7 +18,7 @@ from scipy.spatial.distance import pdist, squareform
 from .diSNE_utils import *
 
 
-def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: int = 4, n_dim: int = 2):
+def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: int = 4, n_dim: int = 2, pca: bool = True):
     """
     t-SNE (t-Distributed Stochastic Neighbor Embedding) algorithm implementation.
     Using the results from the helper functions defined in diSNE_utils.py, this function iterates 
@@ -38,7 +38,10 @@ def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: in
         adata (AnnData object): Updated AnnData object containing the t-SNE results.
 
     """
-    X = adata.X
+    if pca:
+        X = adata.obsm['X_pca']
+    else:
+        X = adata.X
     n = len(X)
 
     # Get original affinities matrix
@@ -114,15 +117,23 @@ def main():
     parser.add_argument("-E", "--early-exaggeration", 
                         help="Factor by which the pairwise affinities are exaggerated during the early iterations of optimization, default=4.",
                         type=float)
+    # display graph
+    parser.add_argument("-g", "--graph", 
+                        help="Path where plot of t-SNE results, labeled by cluster, will be saved",
+                       type=str)
+    # PCA
+    parser.add_argument('-P', "--PCA", action='store_true', help="Indicate whether or not PCA has been run on the input dataset, PCA can speed up the function's runtime")
     
     # parse args
     args = parser.parse_args()
 
     dataset = args.data
-    perplexity = args.perplexity
-    learning_rate = args.learning_rate
-    iterations = args.num_iterations
-    early_exag = args.early_exaggeration
+    perplexity = args.p
+    learning_rate = args.r
+    iterations = args.T
+    early_exag = args.E
+    graph = args.g
+    PCA = args.P
 
     # check arg parser functionality
     print("dataset:", dataset)
@@ -130,10 +141,15 @@ def main():
     print("learning rate:", learning_rate)
     print("iterations:", iterations)
     print("dataset:", early_exag)
+    print("graph:", graph)
+    print("PCA:", PCA)
 
     # run diSNE with user inputs
-#     diSNE(dataset) 
+    diSNE(dataset, perplexity, iterations, learning_rate, early_exag, PCA) 
+    
+    # save plot to specified directory if user ran with -g option
+    plot_results(dataset, graph, feature='leiden', title='diSNE results', figsize=(10, 8))
+    
     
 if __name__ == "__main__":
     main()
-    

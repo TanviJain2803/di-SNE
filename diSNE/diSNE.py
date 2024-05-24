@@ -104,7 +104,7 @@ def main():
                         type=float) 
     # learning rate
     parser.add_argument("-r", "--learning-rate", 
-                        help="Learning rate used during optimization, default=200. Recommend range: 100-1000",
+                        help="Learning rate used during optimization, default=200. Recommended range: 100-1000",
                         type=float)
     # number of iterations 
     parser.add_argument("-T", "--num-iterations", 

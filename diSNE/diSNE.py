@@ -25,7 +25,7 @@ def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: in
     and optimizes low-dimensional mapping, using a gradient descent with momentum.
 
     Args:
-        adata (AnnData object): Input AnnData object representing the user's dataset.
+        adata (file containing AnnData object): Input file containing the AnnData object representing the user's dataset.
         perplexity (int, optional): Perplexity parameter. Default is 10.
         T (int, optional): Number of iterations for optimization. Default is 1000.
         learning_rate (int, optional): Learning rate for updating the low-dimensional embeddings, or controlling
@@ -35,13 +35,16 @@ def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: in
         n_dim (int, optional): The number of dimensions of the low-dimensional embeddings. Default is 2.
 
     Returns:
-        adata (AnnData object): Updated AnnData object containing the t-SNE results.
+        adata_diSNE (file containing AnnData object): File containing new AnnData object containing the t-SNE results.
 
     """
-    if pca:
-        X = adata.obsm['X_pca']
+    # read in user's adata object
+    dataset = ad.read_h5ad(adata)
+    
+    if pca: # set matrix to PCA if user specified PCA option
+        X = dataset.obsm['X_pca']
     else:
-        X = adata.X
+        X = dataset.X
     n = len(X)
 
     # Get original affinities matrix
@@ -85,7 +88,7 @@ def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: in
     )
     soln = Y[-1]
 #     return soln, Y
-    adata.obsm['X_tsne'] = soln
+    dataset.obsm['X_tsne'] = soln
     return
 
 def main():
@@ -97,8 +100,9 @@ def main():
     # input 
     parser.add_argument("data", help="Annotated data (AnnData) matrix, with Leiden clustering already performed", type=str)
     
-    # output 
-    # option to display output?
+    # optional -- output file(s) to a specific path 
+    parser.add_argument("-o", "--output", 
+                        help="Path where file containing updated AnnData object with t-SNE results will be saved", type=str)
     
     # other options
     # perplexity
@@ -145,9 +149,12 @@ def main():
     print("PCA:", PCA)
 
     # run diSNE with user inputs
-    diSNE(dataset, perplexity, iterations, learning_rate, early_exag, PCA) 
+    results = diSNE(dataset, perplexity, iterations, learning_rate, early_exag, PCA) 
     
-    # save plot to specified directory if user ran with -g option
+    # save results to new file
+    # ADD CODE HERE
+    
+    # generate and plot to specified directory if user ran with -g option
     plot_results(dataset, graph, feature='leiden', title='diSNE results', figsize=(10, 8))
     
     

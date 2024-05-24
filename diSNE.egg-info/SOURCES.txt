@@ -1,4 +1,5 @@
 README.md
+setup.py
 diSNE/__init__.py
 diSNE/diSNE.py
 diSNE/diSNE_utils.py

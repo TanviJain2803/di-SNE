@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-import argparse
-# import functions from utils file
-from diSNE_utils import *
-# set up packages 
 import sys
 import os
 sys.path.append(os.environ["HOME"]+"/.local/lib/python3.9/site-packages")
+# set up packages 
+import argparse
 import scanpy as sc, anndata as ad
 import numpy as np
 import leidenalg
@@ -16,6 +14,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
+# import functions from utils file
+from .diSNE_utils import *
 
 
 def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: int = 4, n_dim: int = 2):
@@ -53,7 +53,7 @@ def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: in
     Y[1] = np.array(Y1)
 
     print("Optimizing Low Dimensional Embedding....")
-    # Optimization
+    # Optimization of the low-dimensional embedding
     for t in range(1, T - 1):
         # Momentum & Early Exaggeration
         if t < 250:
@@ -88,7 +88,7 @@ def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: in
 def main():
     parser = argparse.ArgumentParser(
         prog="diSNE",
-        description="Command-line tool to perform t-SNE (t-Distributed Stochastic Neighbor Embedding)"
+        description="Command-line tool to perform t-SNE (t-Distributed Stochastic Neighbor Embedding) on a pre-filtered, clustered dataset"
     )
     
     # input 
@@ -108,11 +108,11 @@ def main():
                         type=float)
     # number of iterations 
     parser.add_argument("-T", "--num-iterations", 
-                        help="Number of iterations used for optimization. Default=1000",
+                        help="Number of iterations used for optimization, default=1000",
                         type=float) 
     # early exaggeration
     parser.add_argument("-E", "--early-exaggeration", 
-                        help="Factor by which the pairwise affinities are exaggerated during the early iterations of optimization. Default=4.",
+                        help="Factor by which the pairwise affinities are exaggerated during the early iterations of optimization, default=4.",
                         type=float)
     
     # parse args
@@ -124,12 +124,13 @@ def main():
     iterations = args.num_iterations
     early_exag = args.early_exaggeration
 
-    # check what options the user specified
-#     print("dataset:", dataset)
-#     print("perp:", perplexity)
-#     print("learning rate:", learning_rate)
-#     print("iterations:", iterations)
-#     print("dataset:", early_exag)
+    # check arg parser functionality
+    print("dataset:", dataset)
+    print("perp:", perplexity)
+    print("learning rate:", learning_rate)
+    print("iterations:", iterations)
+    print("dataset:", early_exag)
+
     # run diSNE with user inputs
 #     diSNE(dataset) 
     

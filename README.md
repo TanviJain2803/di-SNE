@@ -24,6 +24,14 @@ The only required input to `diSNE` is an AnnData object representing your datase
 
 Any of the additional options below can be specified if desired:  
 - `-P`, `--perplexity`: Perplexity is a core part of the t-SNE algorithm. Generally, perplexity can be thought of as a target number of neighbors for a point in the dataset → the higher the perplexity, the higher value of variance for that point. It typically ranges from around 5-50, and larger/denser dataset usually require a larger perplexity, but we suggest playing around with different perplexity values to see what visualizes your dataset most effectively.
+adata object: should include gene expression matrix (cellxgene), if pca option is specified then uses adata.obsm[‘X_pca’] matrix. If the plot option is specified then adata object must have adata.obs['leiden'] column with cluster labels.
+plot: if user wants a plot they can specify the file path where the tsne jpeg will be saved
+pca: the user can use reduced linear dimension to optimize runtime
+perplexity: Perplexity parameter. Default is 10.
+Early_exaggeration: Factor by which the pairwise affinities are exaggerated during the early iterations of optimization. Default is 4.
+Learning_rate: Learning rate for updating the low-dimensional embeddings. Default is 200.
+T (int, optional): Number of iterations for optimization. Default is 1000.
+n_dim (int, optional): The number of dimensions of the low-dimensional embeddings. Default is 2.
 
 - `-r`, `--learning-rate`: The learning rate controls the step size at each iteration during the optimization portion of t-SNE. The default value is 200, and recommended values range from 100-1000.
   

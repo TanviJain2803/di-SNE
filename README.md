@@ -8,7 +8,9 @@ For more information on t-SNE, visit [Laurens van der Maaten's website](https://
 Installation requires the `pandas`, `numpy`, `scanpy`, and `matplotlib` (seaborn?) libraries to be installed. You can install these with `pip`:  
 `pip install pandas numpy scanpy matplotlib`  
 
-Once these libraries are installed, `diSNE` can be installed with the following command:  
+Once these libraries are installed, `diSNE` can be installed with the following commands:
+`git clone https://github.com/TanviJain2803/di-SNE`
+`cd ./di-SNE`
 `python setup.py install`  OR
 `pip install .` (from inside the `diSNE` directory)  
 

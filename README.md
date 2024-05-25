@@ -21,7 +21,7 @@ To run `diSNE` on a small test example, use the following command:
 `diSNE example.h5ad`
 
 ## Options  
-The only required input to `diSNE` is a h5ad file, containin the AnnData object that represents your dataset, with Leiden clustering already performed on it. For more information on Scanpy's AnnData structure, visit [Scanpy's documentation](https://anndata.readthedocs.io/en/latest/tutorials/notebooks/getting-started.html). 
+The only required input to `diSNE` is a h5ad file, containin the AnnData object that represents your dataset, with Leiden clustering already performed on it. For more information on Scanpy's AnnData structure, visit [Scanpy's documentation](https://anndata.readthedocs.io/en/latest/tutorials/notebooks/getting-started.html). For more information on HDF5 file format, visit the [HDF5 documentation](https://portal.hdfgroup.org/documentation/). 
 
 Any of the additional options below can be specified if desired:   
 - `-o`, `--output`: Path where file containing updated AnnData object with t-SNE results will be saved.  

@@ -9,9 +9,13 @@ Installation requires the `pandas`, `numpy`, `scanpy`, and `matplotlib` (seaborn
 `pip install pandas numpy scanpy matplotlib`  
 
 Once these libraries are installed, `diSNE` can be installed with the following commands:
+
 `git clone https://github.com/TanviJain2803/di-SNE`
+
 `cd ./di-SNE`
+
 `python setup.py install`  OR
+
 `pip install .` (from inside the `diSNE` directory)  
 
 If the install was successful, the command `diSNE --help` should display a help message.  

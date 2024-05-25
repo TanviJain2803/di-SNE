@@ -1,5 +1,6 @@
-This is a toy dataset provided to test/showcase the basic functionality of di-SNE. The dataset, `test_dataset.txt`, is based on the *[Iris Dataset example](https://scikit-learn.org/stable/auto_examples/datasets/plot_iris_dataset.html#sphx-glr-auto-examples-datasets-plot-iris-dataset-py)* from the scikit-learn website.
+The Jupyter notebooks in this repository contain example usage of the diSNE functions on small test datasets for debugging and testing. 
 
-https://github.com/olekscode/Examples-PCA-tSNE/blob/master/Python/Visualizing%20Iris%20Dataset%20using%20PCA%20and%20t-SNE.ipynb
+This repository also contains a toy dataset to test/showcase the basic functionality of diSNE. The dataset is called _, and diSNE can be run on this dataset, with a  graph generated at the command line using the command:  
+`diSNE -o <path to output file> -g <path to output graph> example_dataset.h5ad`
 
-To run this example using di-SNE:
+This command will generate a new `h5ad` file titled `diSNE_output.h5ad` and a graph of the results titled _ at the paths you provide. You can try adjusting the perplexity, number of iterations, and early exaggeration values, although the default options should be effective on this example dataset.

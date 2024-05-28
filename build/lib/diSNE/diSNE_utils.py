@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # functions used in diSNE's main function
 
 # perform grid search to obtain values of sigma based on perplexity (used to get similarities)
@@ -13,30 +14,44 @@ def search_sigma(distances, curr, perplexity):
     Returns:
         sig (float): The value of σ that satisfies the perplexity condition.
     """
-    # initialize result as infinity
-    result = np.inf
-    
+    result = np.inf  # Set first result to be infinity
+
     norm = np.linalg.norm(distances, axis=1)
     std_norm = np.std(norm)  # Use standard deviation of norms to define search space
 
-    for search in np.linspace(0.01 * std_norm, 5 * std_norm, 200):
-        # numerator
-        num = np.exp(-(norm**2) / (2 * search**2))
+    for sig_search in np.linspace(0.01 * std_norm, 5 * std_norm, 200):
+        # Equation 1 Numerator
+        p = np.exp(-(norm**2) / (2 * sig_search**2))
 
         # Set p = 0 when i = j
-        num[curr] = 0
+        p[curr] = 0
 
-        # equation 1 (ε -> 0)
-        eps = np.nextafter(0, 1)
-        p_new = np.maximum(num / np.sum(num), eps)
+        # Equation 1 (ε -> 0)
+        ε = np.nextafter(0, 1)
+        p_new = np.maximum(p / np.sum(p), ε)
+
+        # Handle potential NaNs
+        if np.any(np.isnan(p_new)):
+           # print(f"Skipping sig_search {sig_search}: p_new contains NaNs")
+            continue
 
         # Shannon Entropy
+        p_new = p_new[p_new > 0]  # Avoid log2(0) by filtering out non-positive values
+        if len(p_new) == 0:  # Check if p_new is empty after filtering
+           # print(f"Skipping sig_search {sig_search}: p_new is empty after filtering")
+            continue
+
         H = -np.sum(p_new * np.log2(p_new))
 
-        # Get log(perplexity equation) as close as possible to equality
+        # Handle potential NaN in H
+        if np.isnan(H):
+          #  print(f"Skipping sig_search {sig_search}: H is NaN, p_new: {p_new}")
+            continue
+
+        # Get log(perplexity equation) as close to equality
         if np.abs(np.log(perplexity) - H * np.log(2)) < np.abs(result):
             result = np.log(perplexity) - H * np.log(2)
-            sig = search
+            sig = sig_search
 
     return sig
     
@@ -190,3 +205,20 @@ def compute_gradient(P, Q, Y):
         gradient[i] = 4 * np.sum((A * B).T * C, axis=0)
 
     return gradient
+
+# plot results of diSNE
+def plot_results(adata, path, feature, title='diSNE results', figsize=(10, 8)):
+    # check if path is valid
+    
+    # 
+    tsne_out = adata.obsm['X_tsne']
+    labels = adata.obs[feature].astype(int).values
+    plt.figure(figsize=figsize)
+    scatter = plt.scatter(tsne_out[:, 0], tsne_out[:, 1], c=labels, cmap='viridis', marker='o')
+    if labels is not None:
+        plt.legend(*scatter.legend_elements(), title="Clusters")
+    plt.title(title)
+    plt.xlabel('t-SNE 1')
+    plt.ylabel('t-SNE 2')
+#     plt.colorbar()
+    plt.show()

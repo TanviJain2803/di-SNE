@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-import argparse
-# import functions from utils file
-from diSNE_utils import *
-# set up packages 
 import sys
 import os
 sys.path.append(os.environ["HOME"]+"/.local/lib/python3.9/site-packages")
+# set up packages 
+import argparse
 import scanpy as sc, anndata as ad
 import numpy as np
 import leidenalg
@@ -15,17 +13,20 @@ from scipy.sparse import issparse
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import hdf5plugin
 from scipy.spatial.distance import pdist, squareform
+# import functions from utils file
+from .diSNE_utils import *
 
 
-def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: int = 4, n_dim: int = 2):
+def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: int = 4, n_dim: int = 2, pca: bool = True):
     """
     t-SNE (t-Distributed Stochastic Neighbor Embedding) algorithm implementation.
     Using the results from the helper functions defined in diSNE_utils.py, this function iterates 
     and optimizes low-dimensional mapping, using a gradient descent with momentum.
 
     Args:
-        adata (AnnData object): Input AnnData object representing the user's dataset.
+        adata (file containing AnnData object): Input file containing the AnnData object representing the user's dataset.
         perplexity (int, optional): Perplexity parameter. Default is 10.
         T (int, optional): Number of iterations for optimization. Default is 1000.
         learning_rate (int, optional): Learning rate for updating the low-dimensional embeddings, or controlling
@@ -35,10 +36,16 @@ def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: in
         n_dim (int, optional): The number of dimensions of the low-dimensional embeddings. Default is 2.
 
     Returns:
-        adata (AnnData object): Updated AnnData object containing the t-SNE results.
+        adata_diSNE (file containing AnnData object): File containing new AnnData object containing the t-SNE results.
 
     """
-    X = adata.X
+    # read in user's adata object
+    dataset = ad.read_h5ad(adata)
+    
+    if pca: # set matrix to PCA if user specified PCA option
+        X = dataset.obsm['X_pca']
+    else:
+        X = dataset.X
     n = len(X)
 
     # Get original affinities matrix
@@ -53,7 +60,7 @@ def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: in
     Y[1] = np.array(Y1)
 
     print("Optimizing Low Dimensional Embedding....")
-    # Optimization
+    # Optimization of the low-dimensional embedding
     for t in range(1, T - 1):
         # Momentum & Early Exaggeration
         if t < 250:
@@ -82,20 +89,21 @@ def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: in
     )
     soln = Y[-1]
 #     return soln, Y
-    adata.obsm['X_tsne'] = soln
+    dataset.obsm['X_tsne'] = soln
     return
 
 def main():
     parser = argparse.ArgumentParser(
         prog="diSNE",
-        description="Command-line tool to perform t-SNE (t-Distributed Stochastic Neighbor Embedding)"
+        description="Command-line tool to perform t-SNE (t-Distributed Stochastic Neighbor Embedding) on a pre-filtered, clustered dataset"
     )
     
     # input 
     parser.add_argument("data", help="Annotated data (AnnData) matrix, with Leiden clustering already performed", type=str)
     
-    # output 
-    # option to display output?
+    # optional -- output file(s) to a specific path 
+    parser.add_argument("-o", "--output", 
+                        help="Path where file containing updated AnnData object with t-SNE results will be saved", type=str)
     
     # other options
     # perplexity
@@ -104,16 +112,22 @@ def main():
                         type=float) 
     # learning rate
     parser.add_argument("-r", "--learning-rate", 
-                        help="Learning rate used during optimization, default=200. Recommend range: 100-1000",
+                        help="Learning rate used during optimization, default=200. Recommended range: 100-1000",
                         type=float)
     # number of iterations 
     parser.add_argument("-T", "--num-iterations", 
-                        help="Number of iterations used for optimization. Default=1000",
+                        help="Number of iterations used for optimization, default=1000",
                         type=float) 
     # early exaggeration
     parser.add_argument("-E", "--early-exaggeration", 
-                        help="Factor by which the pairwise affinities are exaggerated during the early iterations of optimization. Default=4.",
+                        help="Factor by which the pairwise affinities are exaggerated during the early iterations of optimization, default=4.",
                         type=float)
+    # display graph
+    parser.add_argument("-g", "--graph", 
+                        help="Path where plot of t-SNE results, labeled by cluster, will be saved",
+                       type=str)
+    # PCA
+    parser.add_argument('-P', "--PCA", action='store_true', help="Indicate whether or not PCA has been run on the input dataset, PCA can speed up the function's runtime")
     
     # parse args
     args = parser.parse_args()
@@ -123,16 +137,29 @@ def main():
     learning_rate = args.learning_rate
     iterations = args.num_iterations
     early_exag = args.early_exaggeration
+    graph = args.graph
+    PCA = args.PCA
 
-    # check what options the user specified
-#     print("dataset:", dataset)
-#     print("perp:", perplexity)
-#     print("learning rate:", learning_rate)
-#     print("iterations:", iterations)
-#     print("dataset:", early_exag)
+    # check arg parser functionality
+    print("dataset:", dataset)
+    print("perp:", perplexity)
+    print("learning rate:", learning_rate)
+    print("iterations:", iterations)
+    print("dataset:", early_exag)
+    print("graph:", graph)
+    print("PCA:", PCA)
+
     # run diSNE with user inputs
-#     diSNE(dataset) 
+#     results = diSNE(dataset, perplexity, iterations, learning_rate, early_exag, PCA) 
+    
+    # save results to new file
+    # ADD CODE HERE
+    
+    # generate and plot to specified directory if user ran with -g option
+#     plot_results(dataset, graph, feature='leiden', title='diSNE results', figsize=(10, 8))
+
+    # add code here
+    
     
 if __name__ == "__main__":
     main()
-    

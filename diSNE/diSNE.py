@@ -2,7 +2,6 @@
 
 import sys
 import os
-sys.path.append(os.environ["HOME"]+"/.local/lib/python3.9/site-packages")
 # set up packages 
 import argparse
 import scanpy as sc, anndata as ad
@@ -16,7 +15,7 @@ import numpy as np
 import hdf5plugin
 from scipy.spatial.distance import pdist, squareform
 # import functions from utils file
-from .diSNE_utils import *
+from . import diSNE_utils as diSNE_utils
 
 
 def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: int = 4, n_dim: int = 2, pca: bool = True):
@@ -49,14 +48,14 @@ def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: in
     n = len(X)
 
     # Get original affinities matrix
-    P = get_highdim_affinities(X, perplexity)
-    P_symmetric = convert_to_jointprob(P)
+    P = diSNE_utils.get_highdim_affinities(X, perplexity)
+    P_symmetric = diSNE_utils.convert_to_jointprob(P)
 
     # Initialization
     Y = np.zeros(shape=(T, n, n_dim))
     Y_minus1 = np.zeros(shape=(n, n_dim))
     Y[0] = Y_minus1
-    Y1 = initialize(X, n_dim)
+    Y1 = diSNE_utils.initialize(X, n_dim)
     Y[1] = np.array(Y1)
 
     print("Optimizing Low Dimensional Embedding....")
@@ -71,10 +70,10 @@ def diSNE(adata, perplexity, T, learning_rate: int = 200, early_exaggeration: in
             early_exaggeration = 1
 
         # Get Low Dimensional Affinities
-        Q = get_lowdim_affinities(Y[t])
+        Q = diSNE_utils.get_lowdim_affinities(Y[t])
 
         # Get Gradient of Cost Function
-        gradient = compute_gradient(early_exaggeration * P_symmetric, Q, Y[t])
+        gradient = diSNE_utils.compute_gradient(early_exaggeration * P_symmetric, Q, Y[t])
 
         # Update Rule
         Y[t + 1] = Y[t] - learning_rate * gradient + momentum * (Y[t] - Y[t - 1])  # Use negative gradient

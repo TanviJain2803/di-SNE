@@ -6,7 +6,6 @@ import os
 import argparse
 import scanpy as sc, anndata as ad
 import numpy as np
-import leidenalg
 import pandas as pd
 from scipy.sparse import issparse
 import matplotlib.pyplot as plt

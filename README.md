@@ -27,7 +27,7 @@ python setup.py install --user
 
 If the install was successful, the command `diSNE --help` should display a help message.  
 
-Note: If the `diSNE` command was not found, you may need to include the script installation path in your $PATH. You can use `export PATH=$PATH:/home/<user>/.local/bin` at the command line to do so.
+Note: If the `diSNE` command was not found, you may need to include the script installation path in your $PATH. You can use `export PATH=$PATH:/home/$USER/.local/bin` at the command line to do so.
 
 # Usage  
 `diSNE [-options] data` 

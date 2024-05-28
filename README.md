@@ -5,6 +5,7 @@
 For more information on t-SNE, visit [Laurens van der Maaten's website](https://lvdmaaten.github.io/tsne/).
 
 # Install Instructions
+## Prerequisites
 Installation requires the `pandas`, `numpy`, `scanpy`, and `matplotlib` (seaborn?) libraries to be installed. You can install these with `pip`:  
 `pip install pandas numpy scanpy matplotlib`  
 
@@ -12,19 +13,29 @@ Once these libraries are installed, `diSNE` can be installed with the following 
 
 `git clone https://github.com/TanviJain2803/di-SNE`
 
-`cd ./di-SNE`
+`cd ./diSNE`
 
 `python setup.py install`  OR
 
 `pip install .` (from inside the `diSNE` directory)  
 
+Note: if you do not have root access, you can run the commands above with additional options to install locally:
+```
+pip install --user pandas numpy scanpy matplotlib
+python setup.py install --user
+```
+
 If the install was successful, the command `diSNE --help` should display a help message.  
+
+Note: If the `diSNE` command was not found, you may need to include the script installation path in your $PATH. You can use `export PATH=$PATH:/home/<user>/.local/bin` at the command line to do so.
 
 # Usage  
 `diSNE [-options] data` 
 
-To run `diSNE` on a small test example, use the following command:  
-`diSNE example.h5ad`
+To run `diSNE` on a small test example (using files in this repo), use the following command:  
+`diSNE -g -o example-files/example.h5ad`  
+
+Jupyter Notebooks containing the results of diSNE compared to Scanpy's t-SNE command on the provided test file can be found in `example-files`.
 
 ## Options  
 The only required input to `diSNE` is a h5ad file, containin the AnnData object that represents your dataset, with Leiden clustering already performed on it. For more information on Scanpy's AnnData structure, visit [Scanpy's documentation](https://anndata.readthedocs.io/en/latest/tutorials/notebooks/getting-started.html). For more information on HDF5 file format, visit the [HDF5 documentation](https://portal.hdfgroup.org/documentation/). 
@@ -34,7 +45,7 @@ Any of the additional options below can be specified if desired:
 
 - `-P`, `--PCA`: **Can only be used if PCA has been run on the input AnnData object.** Uses reduced linear dimensions to optimize runtime.
 
-- `-p`, `--perplexity`: Perplexity is a core part of the t-SNE algorithm. Generally, perplexity can be thought of as a target number of neighbors for a point in the dataset (the higher the perplexity, the higher value of variance for that point). It typically ranges from around 5-50, and larger/denser dataset usually require a larger perplexity, but we suggest playing around with different perplexity values to see what visualizes your dataset most effectively.
+- `-p`, `--perplexity`: Generally, perplexity can be thought of as a target number of neighbors for a point in the dataset (the higher the perplexity, the higher value of variance for that point). It typically ranges from around 5-50, and larger/denser datasets usually require a larger perplexity, but we suggest playing around with different perplexity values to see what visualizes your dataset most effectively.
 
 - `-r`, `--learning-rate`: The learning rate controls the step size at each iteration during the optimization portion of t-SNE. The default value is 200, and recommended values range from 100-1000.
   

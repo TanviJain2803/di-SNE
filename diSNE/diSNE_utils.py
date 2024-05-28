@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 # functions used in diSNE's main function
+import warnings
+warnings.filterwarnings('ignore')
+import numpy as np
+import pandas as pd
+from scipy.sparse import issparse
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from scipy.spatial.distance import pdist, squareform
+import hdf5plugin
 
 # perform grid search to obtain values of sigma based on perplexity (used to get similarities)
 def search_sigma(distances, curr, perplexity):
@@ -14,6 +24,8 @@ def search_sigma(distances, curr, perplexity):
     Returns:
         sig (float): The value of σ that satisfies the perplexity condition.
     """
+#     print("perplexity:", perplexity)
+    
     result = np.inf  # Set first result to be infinity
 
     norm = np.linalg.norm(distances, axis=1)
@@ -206,13 +218,25 @@ def compute_gradient(P, Q, Y):
 
     return gradient
 
-# plot results of diSNE
-def plot_results(adata, path, feature, title='diSNE results', figsize=(10, 8)):
-    # check if path is valid
+# save t-SNE results to file   "./diSNE-results
+def save_data_to_h5ad(adata, filename = "diSNE-results"):
+    """
+    Save data to an H5AD file format with specified compression settings.
+
+    Parameters:
+        adata (AnnData): The AnnData object containing the data.
+        filename (str), OPTIONAL: The name of the file to which the data will be saved, default is diSNE-results.h5ad
+    """
+    compression = hdf5plugin.FILTERS["zstd"]
+    compression_opts = hdf5plugin.Zstd(clevel=5).filter_options
+
+    adata.write_h5ad(filename, compression=compression, compression_opts=compression_opts)
+    print("Updated AnnData object saved as file", filename)
     
-    # 
+# generate plot of diSNE results
+def plot_results(adata, filename='diSNE_plot.png', title='diSNE results', figsize=(10, 8)):
     tsne_out = adata.obsm['X_tsne']
-    labels = adata.obs[feature].astype(int).values
+    labels = adata.obs['leiden'].astype(int).values
     plt.figure(figsize=figsize)
     scatter = plt.scatter(tsne_out[:, 0], tsne_out[:, 1], c=labels, cmap='viridis', marker='o')
     if labels is not None:
@@ -222,3 +246,13 @@ def plot_results(adata, path, feature, title='diSNE results', figsize=(10, 8)):
     plt.ylabel('t-SNE 2')
 #     plt.colorbar()
     plt.show()
+    plt.savefig(filename) 
+    print("Plot saved as", filename)
+#     return plt
+      
+# save the plot results to the given directory
+# def save_tsne_plot(adata, feature='leiden', filename = './tsne_plot.png', title='diSNE results', figsize=(10, 8)):
+# def save_tsne_plot(adata, filename='./tsne_plot.png', title='diSNE results', figsize=(10, 8)):
+#     plot = plot_results(adata, 'leiden', title, figsize)
+#     plot.savefig(filename)  # Save the plot to a file
+#     print("Plot saved as", filename)

@@ -13,7 +13,7 @@ Once these libraries are installed, `diSNE` can be installed with the following 
 
 `git clone https://github.com/TanviJain2803/di-SNE`
 
-`cd ./diSNE`
+`cd ./di-SNE`
 
 `python setup.py install`  OR
 

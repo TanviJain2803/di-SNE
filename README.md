@@ -1,13 +1,15 @@
 # diSNE
 `diSNE` is a tool to perform t-SNE, t-distributed stochastic neighbor embedding, on a pre-filtered and clustered dataset. t-SNE aids with non-linear dimensionality reduction for high-dimensional data, making it applicable when analyzing single-cell RNA sequencing (scRNA-seq) data, as well as many other types of datasets.   
-`diSNE` utilizes the existing Scanpy library to perform clustering on the given dataset, and uses the Matplotlib library to visualize the data. A full list of required packages can be found in `tests/requirements.txt`.   
+As a prerequisite, diSNE expects that the input dataset has been pre-processed as desired by the user, and that the Scanpy library has been used to perform Leiden clustering on the dataset. A full list of required packages can be found in `tests/requirements.txt`.   
 
 For more information on t-SNE, visit [Laurens van der Maaten's website](https://lvdmaaten.github.io/tsne/).
 
 # Install Instructions
 ## Prerequisites
-Installation requires the `pandas`, `numpy`, `scanpy`, and `matplotlib` (seaborn?) libraries to be installed. You can install these with `pip`:  
-`pip install pandas numpy scanpy matplotlib`  
+Installation requires the `pandas`, `numpy`, `scanpy`, `matplotlib`, `seaborn`, and `hdf5plugin` libraries to be installed. You can install these with `pip`:  
+```
+pip install pandas numpy scanpy matplotlib seaborn hdf5plugin`
+``` 
 
 Once these libraries are installed, `diSNE` can be installed with the following commands:
 
@@ -21,27 +23,27 @@ Once these libraries are installed, `diSNE` can be installed with the following 
 
 Note: if you do not have root access, you can run the commands above with additional options to install locally:
 ```
-pip install --user pandas numpy scanpy matplotlib
+pip install --user pandas numpy scanpy matplotlib seaborn hdf5plugin
 python setup.py install --user
 ```
 
 If the install was successful, the command `diSNE --help` should display a help message.  
 
-Note: If the `diSNE` command was not found, you may need to include the script installation path in your $PATH. You can use `export PATH=$PATH:/home/$USER/.local/bin` at the command line to do so.
+Note: If the `diSNE` command was not found, you may need to include the script installation path in your $PATH. You can run `export PATH=$PATH:/home/$USER/.local/bin` at the command line to do so.
 
 # Usage  
 `diSNE [-options] data` 
 
 To run `diSNE` on a small test example (using files in this repo), use the following command:  
-`diSNE -g -o example-files/example.h5ad`  
+```diSNE -g example_plot.png example-files/example_dataset.h5ad```  
 
-Jupyter Notebooks containing the results of diSNE compared to Scanpy's t-SNE command on the provided test file can be found in `example-files`.
+This will run diSNE on the file `example_dataset.h5ad` included in the `example-files` folder, and will save the updated AnnData object with the t-SNE results to a new file called `diSNE-results.h5ad`, and a plot of the results to a file called `example_plot.png`. We include a plot of the example dataset that we generated as the file `reference-example.png` in the `example-files` folder for reference. Note that since t-SNE is a stochastic algorithm, results vary across runs and your graph may look slightly different than ours. Generally, you should expect to see three clusters of points on the plot.  
 
 ## Options  
 The only required input to `diSNE` is a h5ad file, containin the AnnData object that represents your dataset, with Leiden clustering already performed on it. For more information on Scanpy's AnnData structure, visit [Scanpy's documentation](https://anndata.readthedocs.io/en/latest/tutorials/notebooks/getting-started.html). For more information on HDF5 file format, visit the [HDF5 documentation](https://portal.hdfgroup.org/documentation/). 
 
 Any of the additional options below can be specified if desired:   
-- `-o`, `--output`: Path where file containing updated AnnData object with t-SNE results will be saved.  
+- `-o`, `--output`: Name of the file where the updated AnnData object with t-SNE results will be saved. File is saved as an h5ad file. For more information on the HDF5 file format, visit the [HDF5 documentation](https://portal.hdfgroup.org/documentation/).   
 
 - `-P`, `--PCA`: **Can only be used if PCA has been run on the input AnnData object.** Uses reduced linear dimensions to optimize runtime.
 
@@ -53,7 +55,7 @@ Any of the additional options below can be specified if desired:
 
 - `-E`, `--early-exaggeration`: Early exaggeration is a constant that scales the original matrix of affinities in high-dimensional space. This emphasizes very similar points (high affinity values in the original high-dimensional space) in the lower-dimensional space earlier on, which will form 'clusters' of highly similar values. The default value is 4.
 
-- `-g`, `--graph`: Path to the file where a plot of the t-SNE results will be saved. The plot is labeled by Leiden cluster.  
+- `-g`, `--graph`: Name of the file where a plot of the t-SNE results will be saved. The plot is labeled by Leiden cluster.   
 
 # Contributors
 This repository was generated by Nimrit Kaur, Tanvi Jain, and Kathryn Chen as a project for CSE 185, spring quarter 2024. We referenced a variety of resources, including [van der Maaten and Hinton's original t-SNE paper](https://jmlr.org/papers/v9/vandermaaten08a.html), the [SciKit Learn documentation](https://scikit-learn.org/stable/modules/manifold.html#t-sne), and other t-SNE examples/walkthroughs.

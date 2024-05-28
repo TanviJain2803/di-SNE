@@ -2,7 +2,7 @@
 
 import sys
 import os
-sys.path.append(os.environ["HOME"]+"/.local/lib/python3.9/site-packages")
+#sys.path.append(os.environ["HOME"]+"/.local/lib/python3.9/site-packages")
 # set up packages 
 import argparse
 import scanpy as sc, anndata as ad

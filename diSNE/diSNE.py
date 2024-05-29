@@ -182,7 +182,7 @@ def main():
     
     # PLOTTING: only if user specified -g option
     # generate plot of results 
-    if graph is not None: # idk
+    if graph is not None: 
         # generate and save plot
         print("Generating plot")
 #         diSNE_utils.save_tsne_plot(results, graph, 'diSNE results', (10, 8))

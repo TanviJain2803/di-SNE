@@ -1,4 +1,6 @@
-matplotlib.pyplot
-seaborn
-numpy
 pandas
+numpy
+scanpy
+matplotlib
+seaborn
+hdf5plugin

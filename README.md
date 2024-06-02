@@ -23,7 +23,7 @@ Once these libraries are installed, `diSNE` can be installed with the following 
 
 Note: if you do not have root access, you can run the commands above with additional options to install locally:
 ```
-pip install --user pandas numpy scanpy matplotlib seaborn hdf5plugin
+pip install --user setuptools pandas numpy scanpy matplotlib seaborn hdf5plugin
 python setup.py install --user
 ```
 

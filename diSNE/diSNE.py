@@ -3,7 +3,7 @@
 import sys
 import os
 import warnings
-warnings.filterwarnings('ignore')
+warnings.filterwarnings('ignore') # suppress warnings while running
 # set up packages 
 import argparse
 import scanpy as sc, anndata as ad
@@ -49,8 +49,7 @@ def diSNE(adata, perplexity, T, learning_rate, early_exaggeration, pca=False):
         learning_rate = 200
     if early_exaggeration is None:
         early_exaggeration = 4
-#     if pca is None:
-#         learning_rate = 200
+
 #     print("perplex:", perplexity)
 #     print("T:", T)
 #     print("learning rate:", learning_rate)
@@ -120,6 +119,7 @@ def diSNE(adata, perplexity, T, learning_rate, early_exaggeration, pca=False):
     return dataset
 
 def main():
+    # set up argument parser
     parser = argparse.ArgumentParser(
         prog="diSNE",
         description="Command-line tool to perform t-SNE (t-Distributed Stochastic Neighbor Embedding) on a pre-filtered, clustered dataset"

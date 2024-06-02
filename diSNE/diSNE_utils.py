@@ -1,7 +1,9 @@
 #!/usr/bin/env python
+
 # functions used in diSNE's main function
+
 import warnings
-warnings.filterwarnings('ignore')
+warnings.filterwarnings('ignore') # suppress warning messages while running
 import numpy as np
 import pandas as pd
 from scipy.sparse import issparse
@@ -73,7 +75,7 @@ def get_highdim_affinities(X, perplexity):
     Function to obtain similarities matrix in original high-dimensional space.
 
     Parameters:
-    X (??): Input dataset
+    X (np.ndarray): Input dataset
     perplexity (int): Perplexity of the joint probability distribution
 
     Returns:
@@ -225,14 +227,14 @@ def compute_gradient(P, Q, Y):
 
     return gradient
 
-# save t-SNE results to file   "./diSNE-results
+# save t-SNE results to file "diSNE-results" in current working directory
 def save_data_to_h5ad(adata, filename = "diSNE-results"):
     """
     Save data to an H5AD file format with specified compression settings.
 
     Parameters:
         adata (AnnData): The AnnData object containing the data.
-        filename (str), OPTIONAL: The name of the file to which the data will be saved, default is diSNE-results.h5ad
+        filename (str), OPTIONAL: The name of the file to which the data will be saved, default is diSNE-results
     """
     compression = hdf5plugin.FILTERS["zstd"]
     compression_opts = hdf5plugin.Zstd(clevel=5).filter_options
@@ -240,7 +242,7 @@ def save_data_to_h5ad(adata, filename = "diSNE-results"):
     adata.write_h5ad(filename, compression=compression, compression_opts=compression_opts)
     print("Updated AnnData object saved as file", filename)
     
-# generate plot of diSNE results
+# generate plot of diSNE results and save it to current directory as the file name specified
 def plot_results(adata, filename='diSNE_plot.png', title='diSNE results', figsize=(10, 8)):
     tsne_out = adata.obsm['X_tsne']
     labels = adata.obs['leiden'].astype(int).values

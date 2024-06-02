@@ -11,7 +11,6 @@ import numpy as np
 import pandas as pd
 from scipy.sparse import issparse
 import matplotlib.pyplot as plt
-import seaborn as sns
 import hdf5plugin
 from scipy.spatial.distance import pdist, squareform
 # import functions from utils file

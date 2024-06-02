@@ -8,7 +8,6 @@ import numpy as np
 import pandas as pd
 from scipy.sparse import issparse
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 import hdf5plugin

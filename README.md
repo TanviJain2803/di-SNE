@@ -6,9 +6,9 @@ For more information on t-SNE, visit [Laurens van der Maaten's website](https://
 
 # Install Instructions
 ## Prerequisites
-Installation requires the `pandas`, `numpy`, `scanpy`, `matplotlib`, `seaborn`, and `hdf5plugin` libraries to be installed. You can install these with `pip`:  
+Installation requires the `setuptools`, `pandas`, `numpy`, `scanpy`, `matplotlib`, `seaborn`, and `hdf5plugin` libraries to be installed. You can install these with `pip`:  
 ```
-pip install pandas numpy scanpy matplotlib seaborn hdf5plugin
+pip install setuptools pandas numpy scanpy matplotlib seaborn hdf5plugin
 ``` 
 
 Once these libraries are installed, `diSNE` can be installed with the following commands:

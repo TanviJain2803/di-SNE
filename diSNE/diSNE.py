@@ -37,7 +37,7 @@ def diSNE(adata, perplexity, T, learning_rate, early_exaggeration, pca=False):
         pca (bool, optional): Whether or not PCA has been run on the dataset, speeds up t-SNE
 
     Returns:
-        adata_diSNE (file containing AnnData object): File containing new AnnData object containing the t-SNE results.
+        dataset (AnnData object): Updated AnnData object containing diSNE results in dataset.obsm['X_tsne']
 
     """
     n_dim = 2
@@ -61,11 +61,19 @@ def diSNE(adata, perplexity, T, learning_rate, early_exaggeration, pca=False):
     # read in user's file as an AnnData object
     dataset = ad.read_h5ad(adata)
     
+    print("Read file", adata)
+    
     if pca: # set matrix to PCA if user specified PCA option
         X = dataset.obsm['X_pca']
     else:
         X = dataset.X
-    n = len(X)
+#     n = len(X)
+    n = X.shape[0]
+    
+    print("Starting t-SNE algorithm")
+    
+#     print("X")
+#     print(X)
 
     # Get original affinities matrix
     P = diSNE_utils.get_highdim_affinities(X, perplexity)
@@ -170,7 +178,6 @@ def main():
 #     print("graph:", graph)
 #     print("PCA:", PCA)
 
-    print("Starting t-SNE algorithm")
     # run diSNE with user inputs
     results = diSNE(dataset, perplexity, iterations, learning_rate, early_exag, PCA) 
     

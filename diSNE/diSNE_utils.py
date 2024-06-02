@@ -79,11 +79,14 @@ def get_highdim_affinities(X, perplexity):
     Returns:
     P (np.ndarray of shape (number of samples * (num samples - 1) / 2)): Joint probabilities matrix.
     """ 
-    n = len(X)
+#     n = len(X)
+    n = X.shape[0]
     P = np.zeros((n, n))
     
     for i in range(0, n):
         # equation 1 numerator
+#         print("X[" + str(i) + "]")
+#         print(X[i])
         difference = X[i] - X
         sig_i = search_sigma(difference, i, perplexity) # call search function to get sigma
         norm = np.linalg.norm(difference, axis=1)
@@ -99,7 +102,7 @@ def get_highdim_affinities(X, perplexity):
     eps = np.nextafter(0, 1)
     P = np.maximum(P, eps)
 
-#     print("Completed Pairwise Affinities Matrix. \n")
+    print("Completed Pairwise Affinities Matrix. \n")
 
     return P
 
@@ -115,7 +118,8 @@ def convert_to_jointprob(P):
     P_symmetric (np.ndarray): Symmetric affinities matrix.
 
     """
-    n = len(P)
+#     n = len(P)
+    n = P.shape[0]
     P_symmetric = np.zeros(shape=(n, n))
     for i in range(0, n):
         for j in range(0, n):
@@ -146,7 +150,8 @@ def initialize(X, n_dim: int = 2, initialization: str = "random"):
 
     # sample initial solution 
     if initialization == "random" or initialization != "PCA":
-        soln = np.random.normal(loc=0, scale=1e-4, size=(len(X), n_dim))
+#         soln = np.random.normal(loc=0, scale=1e-4, size=(len(X), n_dim))
+        soln = np.random.normal(loc=0, scale=1e-4, size=(X.shape[0], n_dim))
     elif initialization == "PCA":
         X_centered = X - X.mean(axis=0)
         _, _, Vt = np.linalg.svd(X_centered)
@@ -168,7 +173,8 @@ def get_lowdim_affinities(Y):
     Q (np.ndarray): The low-dimensional affinities matrix.
     """
 
-    n = len(Y)
+#     n = len(Y)
+    n = Y.shape[0]
     Q = np.zeros(shape=(n, n))
 
     for i in range(0, n):
@@ -205,7 +211,8 @@ def compute_gradient(P, Q, Y):
     gradient (np.ndarray): The gradient of the cost function at the current point Y.
     """
 
-    n = len(P)
+#     n = len(P)
+    n = P.shape[0]
 
     # Compute gradient
     gradient = np.zeros(shape=(n, Y.shape[1]))

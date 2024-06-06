@@ -25,43 +25,39 @@ def search_sigma(distances, curr, perplexity):
     Returns:
         sig (float): The value of σ that satisfies the perplexity condition.
     """
-#     print("perplexity:", perplexity)
     
-    result = np.inf  # Set first result to be infinity
+    result = np.inf  # set initial result to be infinity
 
     norm = np.linalg.norm(distances, axis=1)
-    std_norm = np.std(norm)  # Use standard deviation of norms to define search space
+    std_norm = np.std(norm)  # use standard deviation of norms to define search space
 
     for sig_search in np.linspace(0.01 * std_norm, 5 * std_norm, 200):
-        # Equation 1 Numerator
+        # equation 1 (from paper) numerator
         p = np.exp(-(norm**2) / (2 * sig_search**2))
 
-        # Set p = 0 when i = j
+        # set p = 0 when i = j
         p[curr] = 0
 
-        # Equation 1 (ε -> 0)
+        # equation 1 (ε -> 0)
         ε = np.nextafter(0, 1)
         p_new = np.maximum(p / np.sum(p), ε)
 
-        # Handle potential NaNs
+        # handle potential NaNs
         if np.any(np.isnan(p_new)):
-           # print(f"Skipping sig_search {sig_search}: p_new contains NaNs")
             continue
 
         # Shannon Entropy
-        p_new = p_new[p_new > 0]  # Avoid log2(0) by filtering out non-positive values
-        if len(p_new) == 0:  # Check if p_new is empty after filtering
-           # print(f"Skipping sig_search {sig_search}: p_new is empty after filtering")
+        p_new = p_new[p_new > 0]  # avoid log2(0) by filtering out non-positive values
+        if len(p_new) == 0:  # check if p_new is empty after filtering
             continue
 
         H = -np.sum(p_new * np.log2(p_new))
 
-        # Handle potential NaN in H
+        # handle potential NaN in H
         if np.isnan(H):
-          #  print(f"Skipping sig_search {sig_search}: H is NaN, p_new: {p_new}")
             continue
 
-        # Get log(perplexity equation) as close to equality
+        # get log(perplexity equation) as close to equality
         if np.abs(np.log(perplexity) - H * np.log(2)) < np.abs(result):
             result = np.log(perplexity) - H * np.log(2)
             sig = sig_search
@@ -80,26 +76,23 @@ def get_highdim_affinities(X, perplexity):
     Returns:
     P (np.ndarray of shape (number of samples * (num samples - 1) / 2)): Joint probabilities matrix.
     """ 
-#     n = len(X)
     n = X.shape[0]
     P = np.zeros((n, n))
     
     for i in range(0, n):
         # equation 1 numerator
-#         print("X[" + str(i) + "]")
-#         print(X[i])
         difference = X[i] - X
         sig_i = search_sigma(difference, i, perplexity) # call search function to get sigma
         norm = np.linalg.norm(difference, axis=1)
         P[i, :] = np.exp(-(norm**2) / (2 * sig_i**2))
 
-        # Set p = 0 when j = i
+        # set p = 0 when j = i
         np.fill_diagonal(P, 0)
 
         # compute equation 1
         P[i, :] = P[i, :] / np.sum(P[i, :])
 
-    # Set 0 values to minimum numpy value (ε approx. = 0)
+    # set 0 values to minimum numpy value (ε approx. = 0)
     eps = np.nextafter(0, 1)
     P = np.maximum(P, eps)
 
@@ -119,14 +112,13 @@ def convert_to_jointprob(P):
     P_symmetric (np.ndarray): Symmetric affinities matrix.
 
     """
-#     n = len(P)
     n = P.shape[0]
     P_symmetric = np.zeros(shape=(n, n))
     for i in range(0, n):
         for j in range(0, n):
             P_symmetric[i, j] = (P[i, j] + P[j, i]) / (2 * n)
 
-    # Set 0 values to minimum numpy value (ε approx. = 0)
+    # set 0 values to minimum numpy value (ε approx. = 0)
     eps = np.nextafter(0, 1)
     P_symmetric = np.maximum(P_symmetric, eps)
 
@@ -151,7 +143,6 @@ def initialize(X, n_dim: int = 2, initialization: str = "random"):
 
     # sample initial solution 
     if initialization == "random" or initialization != "PCA":
-#         soln = np.random.normal(loc=0, scale=1e-4, size=(len(X), n_dim))
         soln = np.random.normal(loc=0, scale=1e-4, size=(X.shape[0], n_dim))
     elif initialization == "PCA":
         X_centered = X - X.mean(axis=0)
@@ -174,7 +165,6 @@ def get_lowdim_affinities(Y):
     Q (np.ndarray): The low-dimensional affinities matrix.
     """
 
-#     n = len(Y)
     n = Y.shape[0]
     Q = np.zeros(shape=(n, n))
 
@@ -184,13 +174,13 @@ def get_lowdim_affinities(Y):
         norm = np.linalg.norm(difference, axis=1)
         Q[i, :] = (1 + norm**2) ** (-1)
 
-    # Set p = 0 when j = i
+    # set p = 0 when j = i
     np.fill_diagonal(Q, 0)
 
     # equation 4
     Q = Q / Q.sum()
 
-    # Set 0 values to minimum numpy value (ε approx. = 0)
+    # set 0 values to minimum numpy value (ε approx. = 0)
     eps = np.nextafter(0, 1)
     Q = np.maximum(Q, eps)
 
@@ -201,7 +191,7 @@ def compute_gradient(P, Q, Y):
     """
     Obtain gradient of cost function at current point Y.
     The cost function is the Kullback-Leibler divergence between the joint probability distributions in high dimensional 
-    vs low dimensional space
+    vs low dimensional space.
 
     Parameters:
     P (np.ndarray): The higher-dimension joint probability distribution matrix.
@@ -211,11 +201,9 @@ def compute_gradient(P, Q, Y):
     Returns:
     gradient (np.ndarray): The gradient of the cost function at the current point Y.
     """
-
-#     n = len(P)
     n = P.shape[0]
 
-    # Compute gradient
+    # compute gradient
     gradient = np.zeros(shape=(n, Y.shape[1]))
     for i in range(0, n):
         difference = Y[i] - Y
@@ -252,15 +240,5 @@ def plot_results(adata, filename='diSNE_plot.png', title='diSNE results', figsiz
     plt.title(title)
     plt.xlabel('t-SNE 1')
     plt.ylabel('t-SNE 2')
-#     plt.colorbar()
-    plt.show()
     plt.savefig(filename) 
     print("Plot saved as", filename)
-#     return plt
-      
-# save the plot results to the given directory
-# def save_tsne_plot(adata, feature='leiden', filename = './tsne_plot.png', title='diSNE results', figsize=(10, 8)):
-# def save_tsne_plot(adata, filename='./tsne_plot.png', title='diSNE results', figsize=(10, 8)):
-#     plot = plot_results(adata, 'leiden', title, figsize)
-#     plot.savefig(filename)  # Save the plot to a file
-#     print("Plot saved as", filename)
